@@ -768,7 +768,7 @@ def getRareLocationData(soup,nID):
                             respawntimeList = re.findall(r"(?:<span class=\"q0\">Respawn in: )((?:\d|\.)+)(?:&nbsp;)(.+?)(?:<\/span>)",dataRespawnTime)
                             respawntimer = respawntimeList[0][0] + " " + respawntimeList[0][1]                            
                             if rareRespawnTime is None:
-                                rareRespawnTime = respawntime
+                                rareRespawnTime = respawntimer
                                 indent += "\t"
                             elif rareRespawnTime != respawntimer:
                                 print(str(nID)+"\t\t"+"different respawn time ")
