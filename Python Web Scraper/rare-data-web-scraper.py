@@ -6,7 +6,7 @@ import re
 import chompjs
 
 
-#rares = npcID
+#rares = npcID: zoneName
 #npcID is used on the webpage
 rares = {
     14432: "Teldrassil",
@@ -214,8 +214,8 @@ rares = {
     14232: "Dustwallow Marsh",
     14237: "Dustwallow Marsh",
     14488: "Stranglethorn Vale",
-    2598: None,
-    2602: None,
+    2598: "Arathi Highlands",
+    2602: "Arathi Highlands",
     14234: "Dustwallow Marsh",
     2453: "Alterac Mountains",
     763: "Swamp of Sorrows",
@@ -229,7 +229,7 @@ rares = {
     4339: "Dustwallow Marsh",
     14224: "Badlands",
     2779: "Wetlands",
-    2601: None,
+    2601: "Arathi Highlands",
     14491: "Stranglethorn Vale",
     14448: "Swamp of Sorrows",
     8211: "The Hinterlands",
@@ -352,7 +352,7 @@ rares = {
     10393: "Stratholme",
     9218: "Blackrock Spire",
     9217: "Blackrock Spire",
-    1849: None,
+    1849: "Western Plaguelands",
     1844: "Western Plaguelands",
     14477: "Silithus",
     14478: "Silithus",
@@ -386,9 +386,9 @@ rares = {
     10201: "Winterspring",
     1838: "Western Plaguelands",
     14471: "Silithus",
-    16380: None,
+    16380: [ "Blasted Lands", "Burning Steppes", "Azshara", "Tanaris", "Winterspring", "Eastern Plaguelands" ],
     18677: "Hellfire Peninsula",
-    16379: None,
+    16379: [ "Blasted Lands", "Burning Steppes", "Azshara", "Tanaris", "Winterspring", "Eastern Plaguelands" ],
     1843: "Western Plaguelands",
     18678: "Hellfire Peninsula",
     1851: "Western Plaguelands",
@@ -401,7 +401,7 @@ rares = {
     18685: "Terokkar Forest",
     18689: "Terokkar Forest",
     17144: "Nagrand",
-    18684: None,
+    18684: "Nagrand",
     18694: "Shadowmoon Valley",
     18698: "Netherstorm",
     18692: "Blade's Edge Mountains",
@@ -417,7 +417,7 @@ rares = {
     32377: "Howling Fjord",
     32386: "Howling Fjord",
     32361: "Borean Tundra",
-    14697: None,
+    14697: [ "Blasted Lands", "Burning Steppes", "Azshara", "Tanaris", "Winterspring", "Eastern Plaguelands" ],
     32357: "Borean Tundra",
     32409: "Dragonblight",
     16179: "Karazhan",
@@ -442,7 +442,7 @@ rares = {
     32495: "Icecrown",
     35189: "The Storm Peaks",
     32491: "Icecrown",
-    32630: None,
+    32630: "The Storm Peaks",
     32435: "Dalaran",
 }
 
@@ -634,6 +634,8 @@ rareAmounts = str(len(rares))
 #the final dictionary with correct syntax
 rareLocationData = {}
 
+rareErrors = {}
+
 threads = []
 counterProg = 0
 
@@ -653,6 +655,28 @@ def convertCoord(coordinate):
 def transformCoordinate(xCoord,yCoord):
     return convertCoord(str(xCoord)) + convertCoord(str(yCoord))
 
+#save rarespawn data to dictionary
+def setRareSpawnData(zName,rName,rId,rLvl,rType,rElite,rRespawn,rEvent,rLocation):
+    #check if the master dictionary already has an entry for the zoneID
+    #if it does, we cannot assign an empty sub dictionary to the zoneID key
+    if zName in rareLocationData:
+        rareLocationData[zName][rName] = {}
+    else:
+        rareLocationData[zName] = { rName: {}}
+
+    #save all the data about the rarespawn in the master dict
+    rareLocationData[zName][rName]["id"]              = str(rId)
+    rareLocationData[zName][rName]["level"]           = rLvl
+    rareLocationData[zName][rName]["creature_type"]   = rType
+    if rElite:
+        rareLocationData[zName][rName]["elite"]       = True
+    if rRespawn:
+        rareLocationData[zName][rName]["respawn"]     = rRespawn
+    if rEvent:
+        rareLocationData[zName][rName]["event"]       = True
+    rareLocationData[zName][rName]["locations"]       = rLocation
+
+
 #attempt to extract rarespawn coordinates
 #return success state
 def getRareLocationData(soup,nID):
@@ -663,9 +687,10 @@ def getRareLocationData(soup,nID):
     rareElite       = False
     rareRespawnTime = None
     rareEvent       = False
-    
+    rareLocations   = []
+
     #type at index 13
-    #level and elite at 15
+    #event, level and elite at 15
     #coords at 17
     #start at 12 for unexpected difference
     for elemnt in soup[12:]:
@@ -717,26 +742,11 @@ def getRareLocationData(soup,nID):
                                 indent += "\t"
                             elif rareRespawnTime != respawntimer:
                                 print(str(nID)+"\t\t"+"different respawn time ")
-    
-                #check if the master dictionary already has an entry for the zoneID
-                #if it does, we cannot assign an empty sub dictionary to the zoneID key
-                if rareZoneName in rareLocationData:
-                    rareLocationData[rareZoneName][rareName] = {}
-                else:
-                    rareLocationData[rareZoneName] = { rareName: {}}
-
-                #save all the data about the rarespawn in the master dict
-                rareLocationData[rareZoneName][rareName]["id"]              = str(rareID)
-                rareLocationData[rareZoneName][rareName]["level"]           = rareLevel
-                rareLocationData[rareZoneName][rareName]["creature_type"]   = rareType
-                if rareElite:
-                    rareLocationData[rareZoneName][rareName]["elite"]       = True
-                rareLocationData[rareZoneName][rareName]["respawn"]         = rareRespawnTime
-                if rareEvent:
-                    rareLocationData[rareZoneName][rareName]["event"]       = True
-                rareLocationData[rareZoneName][rareName]["locations"]       = rareLocations
-
-skipahead = True
+                
+            #create and entry in the dictionary for the rarespawn with known location coords
+            setRareSpawnData(rareZoneName,rareName,rareID,rareLevel,rareType,
+                                rareElite,rareRespawnTime,rareEvent,rareLocations)
+            return
 
 #fetch rarespawn location data
 def handleRareData(nID,zName):
@@ -755,7 +765,7 @@ def handleRareData(nID,zName):
     soup = BeautifulSoup(requests.get(url).text, "html.parser").find_all("script")
 
     #attempt to extract pet coordinates
-    getRareLocationData(soup,nID)
+    getRareLocationData(soup,nID,zName)
 
     print(printString)
 
@@ -787,7 +797,10 @@ for zone, zoneData in rareLocationData.items():
                 else:
                     print(indent+key+"\t"+value)
 
-#write pet npcID with (missing location) and (not taught by item) data to file
-# [npcID]
+#write final rarespawn data to file
 with open("rareSpawnData.pkl", "wb") as df:
     pickle.dump(rareLocationData, df)
+
+#write erros and rares tied to events to file
+with open("rareErrors.pkl", "w") as df:
+    pickle.dump(rareErrors, df)
