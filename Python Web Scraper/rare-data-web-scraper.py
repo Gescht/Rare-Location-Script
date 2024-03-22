@@ -9,23 +9,12 @@ import chompjs
 #rares = npcID
 #npcID is used on the webpage
 rares = {
-    25323: None,
-    25406: None,
-    25411: None,
-    11676: None,
-    14018: None,
-    26791: None,
-    14019: None,
-    14016: None,
     14432: "Teldrassil",
     1531: "Tirisfal Glades",
     14428: "Teldrassil",
-    5796: None,
     1936: "Tirisfal Glades",
     14431: "Teldrassil",
     1533: "Tirisfal Glades",
-    5795: None,
-    5790: None,
     14430: "Teldrassil",
     1137: "Dun Morogh",
     5826: "Durotar",
@@ -33,9 +22,6 @@ rares = {
     5786: "Mulgore",
     5808: "Durotar",
     5809: "Durotar",
-    5793: None,
-    5789: None,
-    5794: None,
     10356: "Tirisfal Glades",
     99: "Elwynn Forest",
     471: "Elwynn Forest",
@@ -94,10 +80,9 @@ rares = {
     599: "Westfall",
     506: "Westfall",
     14272: "Redridge Mountains",
-    601: None,
     5912: "Wailing Caverns",
     14267: "Loch Modan",
-    3586: "undefined",
+    3586: "The Deadmines",
     5830: "The Barrens",
     5842: "The Barrens",
     520: "Westfall",
@@ -136,7 +121,6 @@ rares = {
     10643: "Ashenvale",
     1948: "Silverpine Forest",
     12902: "Blackfathom Deeps",
-    12876: None,
     5931: "Stonetalon Mountains",
     5799: "The Barrens",
     14279: "Hillsbrad Foothills",
@@ -200,7 +184,6 @@ rares = {
     10647: "Ashenvale",
     14277: "Hillsbrad Foothills",
     14225: "Desolace",
-    10236: None,
     14228: "Desolace",
     534: "Duskwood",
     2600: "Arathi Highlands",
@@ -208,8 +191,6 @@ rares = {
     14229: "Desolace",
     7895: "The Barrens",
     14222: "Alterac Mountains",
-    10238: None,
-    10237: None,
     14221: "Alterac Mountains",
     2603: "Arathi Highlands",
     4132: "Thousand Needles",
@@ -228,7 +209,6 @@ rares = {
     14233: "Dustwallow Marsh",
     2258: "Alterac Mountains",
     7057: "Badlands",
-    10239: None,
     2753: "Badlands",
     4380: "The Barrens",
     14232: "Dustwallow Marsh",
@@ -248,7 +228,6 @@ rares = {
     2605: "Arathi Highlands",
     4339: "Dustwallow Marsh",
     14224: "Badlands",
-    11580: None,
     2779: "Wetlands",
     2601: None,
     14491: "Stranglethorn Vale",
@@ -257,7 +236,6 @@ rares = {
     5356: "Feralas",
     14492: "Stranglethorn Vale",
     11688: "Desolace",
-    10818: None,
     14446: "Swamp of Sorrows",
     14447: "Swamp of Sorrows",
     8208: "Tanaris",
@@ -273,7 +251,6 @@ rares = {
     8199: "Tanaris",
     10082: "Zul'Farrak",
     5345: "Feralas",
-    10820: None,
     2541: "Stranglethorn Vale",
     2752: "Badlands",
     1552: "Stranglethorn Vale",
@@ -298,7 +275,6 @@ rares = {
     6118: "Ashenvale",
     5399: "Swamp of Sorrows",
     5400: "Swamp of Sorrows",
-    5708: "undefined",
     5349: "Feralas",
     14339: "Felwood",
     8302: "Blasted Lands",
@@ -320,7 +296,6 @@ rares = {
     8924: "Burning Steppes",
     6650: "Azshara",
     8282: "Searing Gorge",
-    8206: None,
     8213: "The Hinterlands",
     6649: "Azshara",
     14342: "Felwood",
@@ -331,17 +306,14 @@ rares = {
     9024: "Blackrock Depths",
     8217: "The Hinterlands",
     13896: "Azshara",
-    5367: None,
     1847: "Western Plaguelands",
     14343: "Felwood",
     8299: "Blasted Lands",
-    14346: None,
     6585: "Un'Goro Crater",
     9042: "Blackrock Depths",
     8301: "Blasted Lands",
     10077: "Burning Steppes",
     6646: "Azshara",
-    14341: None,
     9041: "Blackrock Depths",
     8298: "Blasted Lands",
     14340: "Felwood",
@@ -388,27 +360,22 @@ rares = {
     1885: "Western Plaguelands",
     10202: "Winterspring",
     9596: "Blackrock Spire",
-    15796: None,
     9718: "Blackrock Spire",
     10828: "Eastern Plaguelands",
     10509: "Blackrock Spire",
     11467: "Dire Maul",
     14474: "Silithus",
-    10819: None,
     10199: "Winterspring",
     8979: "Burning Steppes",
     10823: "Eastern Plaguelands",
     10376: "Blackrock Spire",
-    13977: None,
     8976: "Burning Steppes",
     10198: "Winterspring",
     6584: "Un'Goro Crater",
     14473: "Silithus",
     11447: "Feralas",
     16184: "Western Plaguelands",
-    12116: None,
     1841: "Western Plaguelands",
-    9417: None,
     10809: "Stratholme",
     11497: "Feralas",
     10119: "Burning Steppes",
@@ -422,14 +389,10 @@ rares = {
     16380: None,
     18677: "Hellfire Peninsula",
     16379: None,
-    10203: None,
     1843: "Western Plaguelands",
-    14506: None,
-    5348: None,
     18678: "Hellfire Peninsula",
     1851: "Western Plaguelands",
     18679: "Hellfire Peninsula",
-    17075: None,
     1839: "Western Plaguelands",
     18682: "Zangarmarsh",
     18681: "Zangarmarsh",
@@ -439,7 +402,6 @@ rares = {
     18689: "Terokkar Forest",
     17144: "Nagrand",
     18684: None,
-    18699: None,
     18694: "Shadowmoon Valley",
     18698: "Netherstorm",
     18692: "Blade's Edge Mountains",
@@ -481,25 +443,7 @@ rares = {
     35189: "The Storm Peaks",
     32491: "Icecrown",
     32630: None,
-    32338: None,
-    31286: None,
-    31289: None,
-    31086: None,
-    31071: None,
-    39019: None,
-    31074: None,
-    31073: None,
-    31093: None,
-    31072: None,
-    35074: None,
-    31244: None,
-    31156: None,
-    31284: None,
-    31287: None,
-    31288: None,
     32435: "Dalaran",
-    28282: None,
-    28280: None,
 }
 
 #zoneName: zoneID
@@ -747,7 +691,7 @@ def getRareLocationData(soup,nID):
             petLocation = chompjs.parse_js_object(data)
             #iterate all zones the pet is in
             for zoneID, zoneData in petLocation.items():
-                
+
                 rareZoneName  = mapData[zoneID]
                 rareLocations = []
 
@@ -773,7 +717,6 @@ def getRareLocationData(soup,nID):
                                 indent += "\t"
                             elif rareRespawnTime != respawntimer:
                                 print(str(nID)+"\t\t"+"different respawn time ")
-                
     
                 #check if the master dictionary already has an entry for the zoneID
                 #if it does, we cannot assign an empty sub dictionary to the zoneID key
@@ -796,14 +739,14 @@ def getRareLocationData(soup,nID):
 skipahead = True
 
 #fetch rarespawn location data
-def handleRareData(nID):
-    
+def handleRareData(nID,zName):
+
     printString = ""
 
     #counter to visualize progress in command line when executed
     global counterProg
     counterProg += 1
-    
+
     printString = str(counterProg)+" / "+rareAmounts+"\t\t"+str(nID)
 
     #build the final rarespawn id url
@@ -818,8 +761,8 @@ def handleRareData(nID):
 
 
 #create threads for rares
-for npcId in rares:
-    t = threading.Thread(target=handleRareData,args=[npcId])
+for npcId, npcZone in rares.items():
+    t = threading.Thread(target=handleRareData,args=[npcId,npcZone])
     t.start()
     threads.append(t)
 
