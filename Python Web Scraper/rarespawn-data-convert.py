@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import pickle
 import re
 import chompjs
+import html
 
 #rares = npcID: zoneName
 #npcID is used on the webpage
@@ -714,9 +715,7 @@ def getRareLocationData(soup,nID,defaultZoneName):
         data = elemnt.text
         #get rare creature type
         if "\"breadcrumb\":" in data:
-            if "&#039;" in data:
-                print("y")
-            rareName = re.findall(r"(?:,\"name\":\")(.+?)(?:\"};\n)",data)[0]
+            rareName = html.unescape(re.findall(r"(?:,\"name\":\")(.+?)(?:\"};\n)",data)[0])
             rareType = getCreatureType[re.findall(r"(?:\"breadcrumb\":\[0,4,)(\d)",data)[0]]
         #get rare level and elite status
         elif "Markup.printHtml(\"[ul]" in data:
@@ -758,7 +757,6 @@ def getRareLocationData(soup,nID,defaultZoneName):
                 return
 
     # WITHOUT location coords
-    print("name: "+str(rareName))
     #rare has a list of defaultzones
     if type(defaultZoneName) is list:
         for zone in defaultZoneName:
