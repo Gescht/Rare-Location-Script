@@ -781,7 +781,7 @@ def handleRareData(nID,zName):
     #build the final rarespawn id url
     url = mapurl + str(nID)
     #get webpage script data from dict
-    soup = rareSoupLocationData[nID][1].find_all("script")
+    soup = rareSoupLocationData[nID].find_all("script")
 
     #attempt to extract pet coordinates
     getRareLocationData(soup,nID,zName)
