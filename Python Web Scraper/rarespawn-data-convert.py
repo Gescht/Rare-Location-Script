@@ -804,7 +804,6 @@ for thread in threads:
     thread.join() """
 
 for zone, zoneData in rareLocationData.items():
-    break
     print(zone)
     for rareName, rareData in zoneData.items():
         indent = "\t"
