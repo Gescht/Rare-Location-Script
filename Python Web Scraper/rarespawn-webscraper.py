@@ -379,7 +379,7 @@ rares = {
     10824: "Eastern Plaguelands",
     1837: "Western Plaguelands",
     14479: "Silithus",
-    14479: "Blackrock Spire",
+    10899: "Blackrock Spire",
     10201: "Winterspring",
     1838: "Western Plaguelands",
     14471: "Silithus",

@@ -1,10 +1,7 @@
 from bs4 import BeautifulSoup
-import requests
 import pickle
-import threading
 import re
 import chompjs
-
 
 #rares = npcID: zoneName
 #npcID is used on the webpage
@@ -46,7 +43,7 @@ rares = {
     472: "Elwynn Forest",
     10358: "Tirisfal Glades",
     3056: "Mulgore",
-    100: "Elwynn Forest",
+    #100: "Elwynn Forest",
     1119: "Dun Morogh",
     3535: "Teldrassil",
     5865: "The Barrens",
@@ -139,7 +136,7 @@ rares = {
     5848: "The Barrens",
     14424: "Wetlands",
     4015: "Stonetalon Mountains",
-    10639: "Ashenvale",
+    #10639: "Ashenvale",
     4438: "Razorfen Kraul",
     5859: "The Barrens",
     3773: "Ashenvale",
@@ -159,14 +156,14 @@ rares = {
     5928: "Stonetalon Mountains",
     6228: "Gnomeregan",
     5930: "Stonetalon Mountains",
-    14275: "Hillsbrad Foothills",
+    #14275: "Hillsbrad Foothills",
     14427: "Thousand Needles",
     14278: "Hillsbrad Foothills",
     5915: "Stonetalon Mountains",
     2108: "Wetlands",
     4030: "Stonetalon Mountains",
     4066: "Stonetalon Mountains",
-    14276: "Hillsbrad Foothills",
+    #14276: "Hillsbrad Foothills",
     14433: "Wetlands",
     5933: "Thousand Needles",
     503: "Duskwood",
@@ -382,7 +379,7 @@ rares = {
     10824: "Eastern Plaguelands",
     1837: "Western Plaguelands",
     14479: "Silithus",
-    14479: "Blackrock Spire",
+    10899: "Blackrock Spire",
     10201: "Winterspring",
     1838: "Western Plaguelands",
     14471: "Silithus",
@@ -633,6 +630,13 @@ rareAmounts = str(len(rares))
 
 #the final dictionary with correct syntax
 rareLocationData = {}
+#the temp dict with preloaded soup
+rareSoupLocationData = {}
+
+#load rare soup dictionary from file
+#[npcID]: [zoneName,websiteSoup]
+with open("rareSoupDict.pkl", "rb") as f:
+    rareSoupLocationData = pickle.load(f)
 
 rareErrors = []
 
@@ -677,6 +681,17 @@ def setRareSpawnData(zName,rName,rId,rLvl,rType,rElite,rRespawn,rEvent,rLocation
     rareLocationData[zName][rName]["locations"]       = rLocation
 
 
+def getCoordinates(typeListOrDict,nID):
+    returnList = []
+    if type(typeListOrDict) is list:
+        returnList.append(typeListOrDict[0]["coords"])
+    elif isinstance(typeListOrDict, dict):
+        for zoneFloor, zoneCoords in typeListOrDict.items():
+            returnList.append(zoneCoords["coords"])
+    else:
+        rareErrors.append([nID,"zoneData is neither list nor dict"])
+    return returnList
+
 #attempt to extract rarespawn coordinates
 #return success state
 def getRareLocationData(soup,nID,defaultZoneName):
@@ -699,6 +714,8 @@ def getRareLocationData(soup,nID,defaultZoneName):
         data = elemnt.text
         #get rare creature type
         if "\"breadcrumb\":" in data:
+            if "&#039;" in data:
+                print("y")
             rareName = re.findall(r"(?:,\"name\":\")(.+?)(?:\"};\n)",data)[0]
             rareType = getCreatureType[re.findall(r"(?:\"breadcrumb\":\[0,4,)(\d)",data)[0]]
         #get rare level and elite status
@@ -720,18 +737,13 @@ def getRareLocationData(soup,nID,defaultZoneName):
 
                 rareZoneName  = mapData[zoneID]
                 rareLocations = []
-                if rareZoneName != defaultZoneName:
+                if not(type(defaultZoneName) is list) and rareZoneName != defaultZoneName:
                     rareErrors.append([nID,"zone <"+rareZoneName+"> instead of <"+defaultZoneName+">"])
-
-                for rareData in zoneData[0]["coords"]:
+                for rareData in getCoordinates(zoneData,nID)[0]:
                     if "tooltip" in rareData[2]:
                         rareLocations.append(transformCoordinate(rareData[0],rareData[1]))
                         for name, info in rareData[2]["tooltip"].items():
-                            if rareName is None:
-                                rareName = name
-                            elif rareName != name:
-                                rareErrors.append([nID,"name <"+name+"> instead of <"+rareName+">"])
-                                                
+                            rareName = name
                             dataRespawnTime = info["info"]["1"]
                             respawntimeList = re.findall(r"(?:<span class=\"q0\">Respawn in: )((?:\d|\.)+)(?:&nbsp;)(.+?)(?:<\/span>)",dataRespawnTime)
                             respawntimer = respawntimeList[0][0] + " " + respawntimeList[0][1]                            
@@ -746,7 +758,15 @@ def getRareLocationData(soup,nID,defaultZoneName):
                 return
 
     # WITHOUT location coords
-    setRareSpawnData(defaultZoneName,rareName,rareID,rareLevel,rareType,
+    print("name: "+str(rareName))
+    #rare has a list of defaultzones
+    if type(defaultZoneName) is list:
+        for zone in defaultZoneName:
+            setRareSpawnData(zone,rareName,rareID,rareLevel,rareType,
+                        rareElite,rareRespawnTime,rareEvent,rareLocations)
+    #rare has only one defaultzone
+    else:
+        setRareSpawnData(defaultZoneName,rareName,rareID,rareLevel,rareType,
                         rareElite,rareRespawnTime,rareEvent,rareLocations)
 
 #fetch rarespawn location data
@@ -762,21 +782,19 @@ def handleRareData(nID,zName):
 
     #build the final rarespawn id url
     url = mapurl + str(nID)
-    #get webpage script data
-    soupp = BeautifulSoup(requests.get(url).text, "html.parser")
-    asd = ""
-    soup = BeautifulSoup(requests.get(url).text, "html.parser").find_all("script")
+    #get webpage script data from dict
+    soup = rareSoupLocationData[nID][1].find_all("script")
 
     #attempt to extract pet coordinates
     getRareLocationData(soup,nID,zName)
 
     print(printString)
 
-handleRareData(5912,"Wailing Caverns")
-handleRareData(14432,"Teldrassil")
+""" handleRareData(5912,"Wailing Caverns")
+handleRareData(14432,"Teldrassil") """
 
-""" for npcId, npcZone in rares.items():
-    handleRareData(npcId,npcZone) """
+for npcId, npcZone in rares.items():
+    handleRareData(npcId,npcZone)
 """ #create threads for rares
 for npcId, npcZone in rares.items():
     t = threading.Thread(target=handleRareData,args=[npcId,npcZone])
@@ -788,6 +806,7 @@ for thread in threads:
     thread.join() """
 
 for zone, zoneData in rareLocationData.items():
+    break
     print(zone)
     for rareName, rareData in zoneData.items():
         indent = "\t"
@@ -835,4 +854,4 @@ with open("rareSpawnData.lua", "w") as the_file:
 #write erros and rares tied to events to file
 with open("rareErrors.txt", "w") as df:
     for element in rareErrors:
-        the_file.write(element[0]+"\n"+element[1]+"\n")
+        df.write(str(element[0])+"\n"+str(element[1])+"\n\n")
