@@ -55,7 +55,7 @@ rares = {
     12432: "Silverpine Forest",
     3270: "The Barrens",
     1425: "Loch Modan",
-    12433: "Tirisfal Glades",
+    12433: "Silverpine Forest",
     1424: "Westfall",
     3470: "The Barrens",
     519: "Westfall",
@@ -737,7 +737,7 @@ def getRareLocationData(soup,nID,defaultZoneName):
                 rareZoneName  = mapData[zoneID]
                 rareLocations = []
                 if not(type(defaultZoneName) is list) and rareZoneName != defaultZoneName:
-                    rareErrors.append([nID,"zone <"+rareZoneName+"> instead of <"+defaultZoneName+">"])
+                    rareErrors.append([str(nID)+" "+rareName,"zone <"+rareZoneName+"> instead of <"+defaultZoneName+">",mapurl+str(nID)])
                 for rareData in getCoordinates(zoneData,nID)[0]:
                     if "tooltip" in rareData[2]:
                         rareLocations.append(transformCoordinate(rareData[0],rareData[1]))
@@ -749,7 +749,7 @@ def getRareLocationData(soup,nID,defaultZoneName):
                             if rareRespawnTime is None:
                                 rareRespawnTime = respawntimer
                             elif rareRespawnTime != respawntimer:
-                                rareErrors.append([nID,"respawn <"+respawntimer+"> instead of <"+rareRespawnTime+">"])
+                                rareErrors.append([str(nID)+" "+rareName,"respawn <"+respawntimer+"> instead of <"+rareRespawnTime+">",mapurl+str(nID)])
 
                 # with location coords
                 setRareSpawnData(rareZoneName,rareName,rareID,rareLevel,rareType,
@@ -850,5 +850,7 @@ with open("rareSpawnData.lua", "w") as the_file:
 
 #write erros and rares tied to events to file
 with open("rareErrors.txt", "w") as df:
-    for element in rareErrors:
-        df.write(str(element[0])+"\n"+str(element[1])+"\n\n")
+    for entry in rareErrors:
+        for element in entry:
+            df.write(str(element)+"\n")
+        df.write("\n")
