@@ -713,7 +713,8 @@ def getRareLocationData(soup,nID,defaultZoneName):
     rareElite       = False
     rareRespawnTime = None
     rareEvent       = False
-    rareLocations   = []
+
+    coordsSet       = False
 
     #type at index 13
     #event, level and elite at 15
@@ -745,9 +746,12 @@ def getRareLocationData(soup,nID,defaultZoneName):
             for zoneID, zoneData in petLocation.items():
 
                 rareZoneName  = mapData[zoneID]
-                rareLocations = []
+
                 if not(type(defaultZoneName) is list) and rareZoneName != defaultZoneName:
                     rareErrors.append([str(nID)+" "+rareName,"zone <"+rareZoneName+"> instead of <"+defaultZoneName+">",mapurl+str(nID)])
+                    continue
+                
+                rareLocations = []
                 for rareData in getCoordinates(zoneData,nID)[0]:
                     if "tooltip" in rareData[2]:
                         rareLocations.append(transformCoordinate(rareData[0],rareData[1]))
@@ -761,24 +765,27 @@ def getRareLocationData(soup,nID,defaultZoneName):
                             elif rareRespawnTime != respawntimer:
                                 rareErrors.append([str(nID)+" "+rareName,"respawn <"+respawntimer+"> instead of <"+rareRespawnTime+">",mapurl+str(nID)])
 
+
+
                 # with location coords
                 setRareSpawnData(rareZoneName,rareName,rareID,rareLevel,rareType,
                                     rareElite,rareRespawnTime,rareEvent,rareLocations)
-                return
+                coordsSet = True
+
+    #return if we already set spawn data
+    if coordsSet:
+        return
     
-    #entry on the used db was missing
-    if rareName is None:
-        getAlternativeInfo(nID)
-    # WITHOUT location coords
+    # WITHOUT set location coords
     #rare has a list of defaultzones
     if type(defaultZoneName) is list:
         for zone in defaultZoneName:
             setRareSpawnData(zone,rareName,rareID,rareLevel,rareType,
-                        rareElite,rareRespawnTime,rareEvent,rareLocations)
+                        rareElite,rareRespawnTime,rareEvent,[])
     #rare has only one defaultzone
     else:
         setRareSpawnData(defaultZoneName,rareName,rareID,rareLevel,rareType,
-                        rareElite,rareRespawnTime,rareEvent,rareLocations)
+                        rareElite,rareRespawnTime,rareEvent,[])
 
 #fetch rarespawn location data
 def handleRareData(nID,zName):
