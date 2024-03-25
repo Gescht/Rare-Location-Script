@@ -731,6 +731,8 @@ def getCoordinates(typeListOrDict,nID):
 def getAlternativeInfo(nID):
     #build the final rarespawn id url
     urlAlternative = mapurlAlternative + str(nID)
+    #add error message
+    rareErrors.append([str(nID),"emtpy db entry",mapurl+str(nID),urlAlternative])
     #get webpage script data
     soup = BeautifulSoup(requests.get(urlAlternative).text, "html.parser")
     return soup.find_all("script")    
