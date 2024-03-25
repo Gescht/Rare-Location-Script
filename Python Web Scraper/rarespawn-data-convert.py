@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import requests
 import pickle
 import re
 import chompjs
@@ -44,7 +45,7 @@ rares = {
     472: "Elwynn Forest",
     10358: "Tirisfal Glades",
     3056: "Mulgore",
-    #100: "Elwynn Forest",
+    100: "Elwynn Forest",
     1119: "Dun Morogh",
     3535: "Teldrassil",
     5865: "The Barrens",
@@ -137,7 +138,7 @@ rares = {
     5848: "The Barrens",
     14424: "Wetlands",
     4015: "Stonetalon Mountains",
-    #10639: "Ashenvale",
+    10639: "Ashenvale",
     4438: "Razorfen Kraul",
     5859: "The Barrens",
     3773: "Ashenvale",
@@ -157,14 +158,14 @@ rares = {
     5928: "Stonetalon Mountains",
     6228: "Gnomeregan",
     5930: "Stonetalon Mountains",
-    #14275: "Hillsbrad Foothills",
+    14275: "Hillsbrad Foothills",
     14427: "Thousand Needles",
     14278: "Hillsbrad Foothills",
     5915: "Stonetalon Mountains",
     2108: "Wetlands",
     4030: "Stonetalon Mountains",
     4066: "Stonetalon Mountains",
-    #14276: "Hillsbrad Foothills",
+    14276: "Hillsbrad Foothills",
     14433: "Wetlands",
     5933: "Thousand Needles",
     503: "Duskwood",
@@ -645,7 +646,8 @@ threads = []
 counterProg = 0
 
 #npc id blank url
-mapurl = "https://wowgaming.altervista.org/aowow/?npc="
+mapurl            = "https://wowgaming.altervista.org/aowow/?npc="
+mapurlAlternative = "https://db.rising-gods.de/?npc="
 
 #convert x and y float coordinates to xxxxyyyy string with set length
 def convertCoord(coordinate):
@@ -692,6 +694,14 @@ def getCoordinates(typeListOrDict,nID):
     else:
         rareErrors.append([nID,"zoneData is neither list nor dict"])
     return returnList
+
+#get the info from alternative db
+def getAlternativeInfo(nID):
+    #build the final rarespawn id url
+    urlAlternative = mapurlAlternative + str(nID)
+    #get webpage script data
+    soup = BeautifulSoup(requests.get(urlAlternative).text, "html.parser")
+    return soup.find_all("script")    
 
 #attempt to extract rarespawn coordinates
 #return success state
@@ -755,7 +765,10 @@ def getRareLocationData(soup,nID,defaultZoneName):
                 setRareSpawnData(rareZoneName,rareName,rareID,rareLevel,rareType,
                                     rareElite,rareRespawnTime,rareEvent,rareLocations)
                 return
-
+    
+    #entry on the used db was missing
+    if rareName is None:
+        getAlternativeInfo(nID)
     # WITHOUT location coords
     #rare has a list of defaultzones
     if type(defaultZoneName) is list:
@@ -776,12 +789,15 @@ def handleRareData(nID,zName):
     global counterProg
     counterProg += 1
 
-    printString = str(counterProg)+" / "+rareAmounts+"\t\t"+str(nID)
 
-    #build the final rarespawn id url
-    url = mapurl + str(nID)
+    printString = str(counterProg)+" / "+rareAmounts+"\t\t"+str(nID)
+    
     #get webpage script data from dict
     soup = rareSoupLocationData[nID].find_all("script")
+
+    #exception for missing entry for that npc
+    if len(soup) < 18:
+        soup = getAlternativeInfo(nID)
 
     #attempt to extract pet coordinates
     getRareLocationData(soup,nID,zName)
