@@ -30,7 +30,7 @@ rares = {
     1132: "Dun Morogh",
     16855: "Eversong Woods",
     5824: "Durotar",
-    5822: "Orgrimmar",
+    5822: "Durotar",
     5785: "Mulgore",
     5823: "Durotar",
     16854: "Eversong Woods",
@@ -151,7 +151,7 @@ rares = {
     5916: "Stonetalon Mountains",
     14280: "Hillsbrad Foothills",
     10642: "Ashenvale",
-    14426: "The Barrens",
+    14426: "Thousand Needles",
     584: "Redridge Mountains",
     574: "Duskwood",
     10640: "Ashenvale",
@@ -209,7 +209,7 @@ rares = {
     2258: "Alterac Mountains",
     7057: "Uldaman",
     2753: "Badlands",
-    4380: "The Barrens",
+    4380: "Dustwallow Marsh",
     14232: "Dustwallow Marsh",
     14237: "Dustwallow Marsh",
     14488: "Stranglethorn Vale",
@@ -227,7 +227,7 @@ rares = {
     2605: "Arathi Highlands",
     4339: "Dustwallow Marsh",
     14224: "Badlands",
-    2779: "Wetlands",
+    2779: "Arathi Highlands",
     2601: "Arathi Highlands",
     14491: "Stranglethorn Vale",
     14448: "Swamp of Sorrows",
@@ -271,7 +271,7 @@ rares = {
     8277: "Searing Gorge",
     8216: "The Hinterlands",
     8660: "Azshara",
-    6118: "Ashenvale",
+    6118: "Azshara",
     5399: "Swamp of Sorrows",
     5400: "Swamp of Sorrows",
     5349: "Feralas",
@@ -373,7 +373,7 @@ rares = {
     6584: "Un'Goro Crater",
     14473: "Silithus",
     11447: "Dire Maul",
-    16184: "Western Plaguelands",
+    16184: "Eastern Plaguelands",
     1841: "Western Plaguelands",
     10809: "Stratholme",
     11497: "Dire Maul",
@@ -440,9 +440,34 @@ rares = {
     32501: "Icecrown",
     32495: "Icecrown",
     35189: "The Storm Peaks",
-    32491: "Icecrown",
+    32491: "The Storm Peaks",
     32630: "The Storm Peaks",
     32435: "Dalaran",
+}
+
+rareAdditionalCoords = {
+    5822:  ["52800900",],
+    12433: ["35500820",],
+    16184: ["05603300",],
+    4380:  ["31102040",],
+    14426: ["32602680",],
+    2751:  ["52501950",],
+    2850:  ["53701560",],
+    8201:  ["40407280","47006560",],
+    6118:  ["13207420",],
+    2779:  ["19409020",],
+    2752:  ["02008050",],
+    14224: ["02808030",],
+    14446: ["61608690","61208410",],
+    18682: ["87108820",],
+    17144: ["76307920",],
+    33776: ["67007830",],
+    32422: ["12205560",],
+    32491: ["29906550",],
+    503:   ["21102720",],
+    10817: ["12607300",],
+    521:   ["38302520","36402440","34302960","32602590","31602900","29702970",
+            "27102720","24902850","23602690","21502650","20002640",],    
 }
 
 #zoneName: zoneID
@@ -659,8 +684,11 @@ def convertCoord(coordinate):
     elif len(coordList[1])<2:
         coordList[1] = coordList[1] + "0"
     return coordList[0] + coordList[1]
+
 def transformCoordinate(xCoord,yCoord):
     return convertCoord(str(xCoord)) + convertCoord(str(yCoord))
+
+
 
 #save rarespawn data to dictionary
 def setRareSpawnData(zName,rName,rId,rLvl,rType,rElite,rRespawn,rEvent,rLocation):
@@ -670,6 +698,10 @@ def setRareSpawnData(zName,rName,rId,rLvl,rType,rElite,rRespawn,rEvent,rLocation
         rareLocationData[zName][rName] = {}
     else:
         rareLocationData[zName] = { rName: {}}
+
+    #add additional coordinates to location data
+    if rId in rareAdditionalCoords:
+         rLocation.extend(rareAdditionalCoords[rId])    
 
     #save all the data about the rarespawn in the master dict
     rareLocationData[zName][rName]["id"]              = str(rId)
