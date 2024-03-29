@@ -13,3 +13,5 @@ rareSpawnData.lua
 rareSpawnData_clean.lua
 rareErrors.txt
 rareSoupDict.pkl
+rareSoupDictAC.pkl
+rareSoupDictTC.pkl

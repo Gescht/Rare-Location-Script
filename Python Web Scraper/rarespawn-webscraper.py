@@ -928,7 +928,6 @@ def getRareData(cType,nID):
 
     print(printString)
 
-
 #create threads for rares
 def createThreads(coreType):
     for npcId in rares[coreType]:
