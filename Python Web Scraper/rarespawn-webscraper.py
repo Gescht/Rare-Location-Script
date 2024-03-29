@@ -894,14 +894,16 @@ mapUrl = {
     "TC": "https://db.rising-gods.de/?npc=",
 }
 
+def amounts(dbString):
+    return str(len(rares[dbString]))
 #variables to display progress
 counterProg = {
     "AC": 0,
     "TC": 0,
 }
 rareAmounts = {
-    "AC": str(len(rares["AC"])),
-    "TC": str(len(rares["TC"])),
+    "AC": amounts("AC"),
+    "TC": amounts("TC"),
 }
 
 #used for threading
