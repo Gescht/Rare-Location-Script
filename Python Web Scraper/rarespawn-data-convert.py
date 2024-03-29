@@ -914,7 +914,7 @@ rareAdditionalCoords = {
     },
     "TC": {
 
-    }
+    },
 }
 
 #zoneName: zoneID
@@ -1110,7 +1110,7 @@ def amounts(dbString):
     return str(len(rares[dbString]))
 rareAmounts = {
     "AC": amounts("AC"),
-    "TC": amounts("TC")
+    "TC": amounts("TC"),
 }
 
 #the final dictionary with correct syntax
@@ -1127,17 +1127,35 @@ rareSoupLocationData = {
 
 #load rare soup dictionary from file
 #[npcID]: [zoneName,websiteSoup]
-with open("rareSoupDict.pkl", "rb") as f:
-    rareSoupLocationData = pickle.load(f)
+with open("rareSoupDictAC.pkl", "rb") as fAC:
+    rareSoupLocationData["AC"] = pickle.load(fAC)
+with open("rareSoupDictTC.pkl", "rb") as fTC:
+    rareSoupLocationData["TC"] = pickle.load(fTC)
 
-rareErrors = []
+#arrays to display errors that occured when getting the actual rare data
+rareErrors = {
+    "AC": [],
+    "TC": [],
+}
 
-threads = []
-counterProg = 0
+threads = {    
+    "AC": [],
+    "TC": [],
+}
+counterProg = {
+    "AC": 0,
+    "TC": 0,
+}
 
 #npc id blank url
-mapurl            = "https://wowgaming.altervista.org/aowow/?npc="
-mapurlAlternative = "https://db.rising-gods.de/?npc="
+mapurl = {
+    "AC": "https://wowgaming.altervista.org/aowow/?npc=",
+    "TC": "https://db.rising-gods.de/?npc=",
+}
+mapurlAlternative = {
+    "AC": "https://db.rising-gods.de/?npc=",
+    "TC": "https://wowgaming.altervista.org/aowow/?npc=",
+}
 
 #convert x and y float coordinates to xxxxyyyy string with set length
 def convertCoord(coordinate):
