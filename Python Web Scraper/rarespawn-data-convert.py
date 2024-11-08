@@ -1171,7 +1171,8 @@ def convertCoord(coordinate):
 def transformCoordinate(xCoord,yCoord):
     return convertCoord(str(xCoord)) + convertCoord(str(yCoord))
 
-
+#ALL variables are transformed
+#start adjusting the script
 
 #save rarespawn data to dictionary
 def setRareSpawnData(zName,rName,rId,rLvl,rType,rElite,rRespawn,rEvent,rLocation):
